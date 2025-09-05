@@ -5,7 +5,7 @@ workflows:
     environment:
       flutter: stable
     scripts:
-      - name: Parse and Build
+      - name: Parse all_in_one_code.md
         script: |
           echo ">>> Parsing all_in_one_code.md"
           python3 <<'EOF'
@@ -26,11 +26,14 @@ workflows:
                   f.write(code.strip())
           EOF
 
-          echo ">>> Flutter Pub Get"
-          cd mobile_app
+      - name: Flutter Pub Get
+        working_directory: mobile_app
+        script: |
           flutter pub get
 
-          echo ">>> Flutter Build"
+      - name: Flutter Build
+        working_directory: mobile_app
+        script: |
           flutter build apk --release
 
     artifacts:
