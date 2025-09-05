@@ -9,7 +9,7 @@ workflows:
         script: |
           echo ">>> Parsing all_in_one_code.md"
           python3 <<'EOF'
-          import os, re
+          import os, re, sys
 
           with open("all_in_one_code.md", encoding="utf-8") as f:
               content = f.read()
@@ -24,6 +24,13 @@ workflows:
               os.makedirs(os.path.dirname(filename), exist_ok=True)
               with open(filename, "w", encoding="utf-8") as f:
                   f.write(code.strip())
+
+          # safety check
+          if not os.path.exists("mobile_app/pubspec.yaml"):
+              print("WARNING: pubspec.yaml missing, creating fallback")
+              os.makedirs("mobile_app", exist_ok=True)
+              with open("mobile_app/pubspec.yaml", "w") as f:
+                  f.write("name: face_swapper_pro\ndescription: Auto fallback pubspec\nversion: 1.0.0\n")
           EOF
 
       - name: Flutter Pub Get
